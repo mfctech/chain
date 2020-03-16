@@ -73,7 +73,7 @@ pub struct Options {
 
 #[allow(dead_code)]
 pub fn run_cli() {
-    env_logger::init();
+    //    env_logger::init();
     let options = Options::from_args();
     Server::new(options).unwrap().start().unwrap();
 }

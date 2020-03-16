@@ -36,7 +36,7 @@ impl Fee {
 /// TODO: overflow checks in Cargo?
 /// [profile.release]
 /// overflow-checks = true
-#[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy, Encode, Decode)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy, Default, Encode, Decode)]
 #[cfg_attr(not(feature = "mesalock_sgx"), serde(transparent))]
 #[cfg_attr(not(feature = "mesalock_sgx"), derive(Serialize, Deserialize))]
 pub struct Milli(u64);
@@ -185,7 +185,7 @@ impl Div for Milli {
 }
 
 /// Linear fee using the basic affine formula `COEFFICIENT * scale_bytes(txaux).len() + CONSTANT`
-#[derive(PartialEq, Eq, PartialOrd, Debug, Clone, Copy, Encode, Decode)]
+#[derive(PartialEq, Eq, PartialOrd, Debug, Clone, Copy, Default, Encode, Decode)]
 #[cfg_attr(not(feature = "mesalock_sgx"), derive(Serialize, Deserialize))]
 pub struct LinearFee {
     /// this is the minimal fee

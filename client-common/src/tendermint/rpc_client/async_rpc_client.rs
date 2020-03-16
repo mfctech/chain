@@ -147,7 +147,7 @@ impl AsyncRpcClient {
     /// TODO: Usage of `Vec` can be removed once we execute it in a purely async context
     pub async fn call_batch<T>(&self, batch_params: &[(&str, Vec<Value>)]) -> Result<Vec<T>>
     where
-        for<'de> T: Deserialize<'de>,
+        for<'de> T: Deserialize<'de> + std::fmt::Debug,
     {
         let response_values = self.request_batch(batch_params).await?;
         let mut responses = Vec::with_capacity(response_values.len());

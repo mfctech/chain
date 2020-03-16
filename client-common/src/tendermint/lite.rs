@@ -8,7 +8,7 @@ use crate::Result as CommonResult;
 
 ///
 #[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct TrustedState(pub(crate) Option<lite::TrustedState<SignedHeader, Header>>);
+pub struct TrustedState(pub Option<lite::TrustedState<SignedHeader, Header>>);
 
 impl TrustedState {
     /// construct genesis trusted state

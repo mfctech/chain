@@ -84,7 +84,7 @@ impl SyncRpcClient {
     /// Makes RPC call in batch and deserializes responses
     pub fn call_batch<T>(&self, params: Vec<(&'static str, Vec<Value>)>) -> Result<Vec<T>>
     where
-        T: Send + 'static,
+        T: Send + 'static + std::fmt::Debug,
         for<'de> T: Deserialize<'de>,
     {
         let (sender, receiver) = sync_channel(1);
@@ -116,7 +116,12 @@ impl SyncRpcClient {
         heights: T,
     ) -> Result<Vec<ValidatorsResponse>> {
         let params = heights
-            .map(|height| ("validators", vec![json!(height.to_string())]))
+            .map(|height| {
+                (
+                    "validators",
+                    vec![json!(height.to_string()), json!("0"), json!("100")],
+                )
+            })
             .collect::<Vec<(&str, Vec<Value>)>>();
         self.call_batch(params)
     }
@@ -141,7 +146,7 @@ impl Client for SyncRpcClient {
     }
 
     /// Makes `status` call to tendermint
-    fn status(&self) -> Result<Status> {
+    fn status(&self) -> Result<StatusResponse> {
         self.call("status", Default::default())
     }
 
@@ -161,7 +166,7 @@ impl Client for SyncRpcClient {
     }
 
     /// Makes `block_results` call to tendermint
-    fn block_results(&self, height: u64) -> Result<BlockResults> {
+    fn block_results(&self, height: u64) -> Result<BlockResultsResponse> {
         let params = vec![json!(height.to_string())];
         self.call("block_results", params)
     }
@@ -170,7 +175,7 @@ impl Client for SyncRpcClient {
     fn block_results_batch<'a, T: Iterator<Item = &'a u64>>(
         &self,
         heights: T,
-    ) -> Result<Vec<BlockResults>> {
+    ) -> Result<Vec<BlockResultsResponse>> {
         let params = heights
             .map(|height| ("block_results", vec![json!(height.to_string())]))
             .collect::<Vec<(&'static str, Vec<Value>)>>();
@@ -194,6 +199,7 @@ impl Client for SyncRpcClient {
             let signed_header =
                 lite::SignedHeader::new(commit.signed_header.clone(), block.header.clone());
             state = if let Some(state) = &state.0 {
+                // FIXME: use new interface in tendermint v0.33 to replace verify_single
                 lite::verifier::verify_single(
                     state.clone(),
                     &signed_header,
