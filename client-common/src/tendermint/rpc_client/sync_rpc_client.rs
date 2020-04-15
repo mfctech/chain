@@ -84,7 +84,7 @@ impl SyncRpcClient {
     /// Makes RPC call in batch and deserializes responses
     pub fn call_batch<T>(&self, params: Vec<(&'static str, Vec<Value>)>) -> Result<Vec<T>>
     where
-        T: Send + 'static + std::fmt::Debug,
+        T: Send + 'static,
         for<'de> T: Deserialize<'de>,
     {
         let (sender, receiver) = sync_channel(1);

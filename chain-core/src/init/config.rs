@@ -80,7 +80,7 @@ impl fmt::Display for DistributionError {
 
 /// Initial configuration ("app_state" in genesis.json of Tendermint config)
 /// TODO: reward/treasury config, extra validator config...
-#[derive(Debug, PartialEq, Eq, Default, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 #[cfg_attr(not(feature = "mesalock_sgx"), derive(Serialize, Deserialize))]
 pub struct InitConfig {
     /// Redeem mapping of ERC20 snapshot: Eth address => (StakedStateDestination,CRO tokens)

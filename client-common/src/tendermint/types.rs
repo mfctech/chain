@@ -24,7 +24,7 @@ pub use tendermint::{
 };
 
 /// crypto-com instantiated genesis type
-pub type Genesis = GenericGenesis<InitConfig>;
+pub type Genesis = GenericGenesis<Option<InitConfig>>;
 
 /// crypto-com instantiated genesis type
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -102,7 +102,11 @@ pub trait GenesisExt {
 
 impl GenesisExt for Genesis {
     fn fee_policy(&self) -> LinearFee {
-        self.app_state.network_params.initial_fee_policy
+        self.app_state
+            .as_ref()
+            .expect("parsed app state")
+            .network_params
+            .initial_fee_policy
     }
 }
 

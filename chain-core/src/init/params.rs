@@ -14,7 +14,7 @@ const MAX_SLASH_RATIO: Milli = Milli::new(1, 0); // 1.0
 
 /// network parameters specified at genesis
 /// ref: https://crypto-com.github.io/getting-started/network-parameters.html
-#[derive(Debug, PartialEq, Eq, Clone, Default, Encode, Decode)]
+#[derive(Debug, PartialEq, Eq, Clone, Encode, Decode)]
 #[cfg_attr(not(feature = "mesalock_sgx"), derive(Serialize, Deserialize))]
 pub struct InitNetworkParameters {
     /// Initial fee setting
@@ -155,7 +155,7 @@ impl NetworkParameters {
 }
 
 /// infraction parameters for jailing
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Default, Encode, Decode)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Encode, Decode)]
 #[cfg_attr(not(feature = "mesalock_sgx"), derive(Serialize, Deserialize))]
 pub struct JailingParameters {
     /// Number of blocks for which the moving average is calculated for uptime tracking
@@ -166,7 +166,7 @@ pub struct JailingParameters {
 }
 
 /// infraction parameters for slashing
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Default, Encode, Decode)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Encode, Decode)]
 #[cfg_attr(not(feature = "mesalock_sgx"), derive(Serialize, Deserialize))]
 pub struct SlashingParameters {
     /// Percentage of funds (bonded + unbonded) slashed when validator is not live (liveness is calculated by jailing
@@ -178,7 +178,7 @@ pub struct SlashingParameters {
 
 /// reward parameters
 /// ref: https://crypto-com.github.io/getting-started/reward-and-punishments.html#validator-rewards
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Default, Encode, Decode)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Encode, Decode)]
 #[cfg_attr(not(feature = "mesalock_sgx"), derive(Serialize, Deserialize))]
 pub struct RewardsParameters {
     /// Maximum monetary expansion for rewards.
@@ -214,7 +214,7 @@ impl RewardsParameters {
 }
 
 /// how much to slash from bonded+unbonded
-#[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy, Default, Encode, Decode)]
+#[derive(PartialEq, Eq, PartialOrd, Ord, Debug, Clone, Copy, Encode, Decode)]
 pub struct SlashRatio(Milli);
 
 impl SlashRatio {

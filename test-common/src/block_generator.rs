@@ -330,7 +330,7 @@ impl TestnetSpec {
                 .unwrap()
                 .as_bytes()
                 .to_vec(),
-            app_state: config,
+            app_state: Some(config),
         };
 
         let staking_table = StakingTable::from_genesis(
