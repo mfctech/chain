@@ -328,8 +328,7 @@ impl<'a, S: SecureStorage, C: Client, D: TxDecryptor, F: FnMut(ProgressReport) -
 
             let range = chunk.collect::<Vec<u64>>();
 
-            //if self.env.enable_fast_forward {
-            if true {
+            if self.env.enable_fast_forward {
                 // Get the last block to check if there are any changes
                 let block = self.env.client.block(range[range.len() - 1])?;
                 if let Some(block) = self.fast_forward_block(&block)? {
