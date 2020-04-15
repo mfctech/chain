@@ -109,7 +109,7 @@ mod tests {
     use tendermint::{block::Height, lite};
 
     use super::{lite::TrustedState, SyncState, SyncStateService};
-    use client_common::storage::{MemoryStorage};
+    use client_common::storage::MemoryStorage;
     use test_common::block_generator::{BlockGenerator, GeneratorClient};
 
     #[test]
