@@ -274,54 +274,6 @@ mod tests {
         #[test]
         fn should_return_ok_of_true_when_block_results_has_the_target_account_event() {
             let response_str = r#"{"height": "37", "txs_results": [{"code": 0, "data": null, "log": "", "info": "", "gasWanted": "0", "gasUsed": "0", "events": [{"type": "valid_txs", "attributes": [{"key": "ZmVl", "value": "MC4wMDAwMDMwNw=="}, {"key": "YWNjb3VudA==", "value": "MHgzMzUwMmVkMzlkMGM0ZTIwNDRmYjM3ZmRjZDUxNjE0OTNmNTkwMGMz"}, {"key": "dHhpZA==", "value": "ZjFmNzNkNmFjZWMyMTExOGRkMWUzNmY2ODRhYWUyMmM2Y2IxN2ZjNTFhZGEzNGEzNDIzMDlkNTMxY2I5YmU4ZA=="}]}], "codespace": ""}], "begin_block_events": null, "end_block_events": [{"type": "block_filter", "attributes": [{"key": "ZXRoYmxvb20=", "value": "AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="}]}], "validator_updates": null, "consensus_param_updates": null}"#;
-            //            let response_str = r#"
-            //            {
-            //    "height":"37",
-            //    "txs_results":[
-            //        {
-            //            "code":0,
-            //            "data":"",
-            //            "log":"",
-            //            "info":"",
-            //            "gasWanted":"0",
-            //            "gasUsed":"0",
-            //            "events":[
-            //                {
-            //                    "type":"valid_txs",
-            //                    "attributes":[
-            //                        {
-            //                            "key":"ZmVl",
-            //                            "value":"MC4wMDAwMDMwNw=="
-            //                        },
-            //                        {
-            //                            "key":"YWNjb3VudA==",
-            //                            "value":"MHgzMzUwMmVkMzlkMGM0ZTIwNDRmYjM3ZmRjZDUxNjE0OTNmNTkwMGMz"
-            //                        },
-            //                        {
-            //                            "key":"dHhpZA==",
-            //                            "value":"ZjFmNzNkNmFjZWMyMTExOGRkMWUzNmY2ODRhYWUyMmM2Y2IxN2ZjNTFhZGEzNGEzNDIzMDlkNTMxY2I5YmU4ZA=="
-            //                        }
-            //                    ]
-            //                }
-            //            ],
-            //            "codespace":""
-            //        }
-            //    ],
-            //    "begin_block_events":null,
-            //    "end_block_events":[
-            //        {
-            //            "type":"block_filter",
-            //            "attributes":[
-            //                {
-            //                    "key":"ZXRoYmxvb20=",
-            //                    "value":"AAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=="
-            //                }
-            //            ]
-            //        }
-            //    ],
-            //    "validator_updates":[],
-            //    "consensus_param_updates":null
-            //}"#;
             let block_results: BlockResultsResponse =
                 serde_json::from_str(response_str).expect("invalid response str");
             let target_account = StakedStateAddress::from(
