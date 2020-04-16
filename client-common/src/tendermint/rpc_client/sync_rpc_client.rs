@@ -199,7 +199,6 @@ impl Client for SyncRpcClient {
             let signed_header =
                 lite::SignedHeader::new(commit.signed_header.clone(), block.header.clone());
             state = if let Some(state) = &state.0 {
-                // FIXME: use new interface in tendermint v0.33 to replace verify_single
                 lite::verifier::verify_single(
                     state.clone(),
                     &signed_header,

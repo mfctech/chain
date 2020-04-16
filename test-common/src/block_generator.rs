@@ -42,7 +42,8 @@ use client_common::tendermint::types::{AbciQuery, BroadcastTxResponse, Genesis};
 use client_common::tendermint::{lite, Client};
 use client_common::Result;
 use client_core::{service::HDAccountType, HDSeed, Mnemonic};
-use tendermint::block::CommitSigs;
+use tendermint::block::BlockIDFlag::BlockIDFlagCommit;
+use tendermint::block::{CommitSig, CommitSigs};
 use tendermint::hash::Algorithm;
 
 lazy_static! {
@@ -142,7 +143,40 @@ impl Node {
         Signature::Ed25519(signer.try_sign(msg).expect("sign message failed"))
     }
 
-    pub fn sign_header(&self, header: &block::Header, chain_id: &chain::Id) -> vote::Vote {
+    pub fn sign_header(&self, header: &block::Header, chain_id: &chain::Id) -> CommitSig {
+        let block_id = block::Id {
+            hash: header.hash(),
+            parts: Some(block::parts::Header::new(
+                0,
+                Hash::new(hash::Algorithm::Sha256, &[0; 32]).unwrap(),
+            )),
+        };
+        let now = Time::now();
+        let canonical_vote = amino_types::vote::CanonicalVote {
+            vote_type: vote::Type::Precommit.to_u32(),
+            height: header.height.value() as i64,
+            round: 0,
+            block_id: Some(amino_types::block_id::CanonicalBlockId {
+                hash: block_id.hash.as_bytes().to_vec(),
+                parts_header: Some(amino_types::block_id::CanonicalPartSetHeader {
+                    total: 0,
+                    hash: vec![0; 32],
+                }),
+            }),
+            timestamp: Some(amino_types::time::TimeMsg::from(now)),
+            chain_id: chain_id.to_string(),
+        };
+        let signature = self.sign_msg(&canonical_vote.bytes_vec_length_delimited());
+
+        CommitSig {
+            block_id_flag: BlockIDFlagCommit,
+            validator_address: Some(self.validator_address()),
+            timestamp: now,
+            signature: Some(signature),
+        }
+    }
+
+    pub fn sign_header2(&self, header: &block::Header, chain_id: &chain::Id) -> vote::Vote {
         let block_id = block::Id {
             hash: header.hash(),
             parts: Some(block::parts::Header::new(
@@ -473,11 +507,18 @@ impl BlockGenerator {
                 Hash::new(hash::Algorithm::Sha256, &[0; 32]).unwrap(),
             )),
         };
+        let commit_signs: Vec<CommitSig> = self
+            .spec
+            .nodes
+            .iter()
+            .map(|node| node.sign_header(&header, &self.genesis.chain_id))
+            .collect();
+
         let commit = block::Commit {
             height,
             round: 0,
             block_id,
-            signatures: CommitSigs::new(vec![]),
+            signatures: CommitSigs::new(commit_signs),
         };
         let block = block::Block {
             header,
@@ -621,15 +662,12 @@ fn gen_network_params(
 
 #[cfg(test)]
 mod tests {
-    /*
     use super::*;
     use std::time::{Duration, SystemTime};
     use tendermint::lite;
-    */
 
     #[test]
     fn check_lite_client() {
-        /*
         let c = GeneratorClient::new(BlockGenerator::one_node());
         {
             let mut gen = c.gen.write().unwrap();
@@ -643,21 +681,19 @@ mod tests {
         let gen = c.gen.read().unwrap();
         let header1 = gen.signed_header(Height::default());
         let header2 = gen.signed_header(Height::default().increment());
-        */
 
-        //FIXME: use new interface in tendermint v0.33 instead of verify_single
-        //let _state = lite::verifier::verify_single(
-        //    lite::TrustedState::new(
-        //        lite::SignedHeader::new(header1.clone(), header1.header.clone()),
-        //        gen.validators.clone(),
-        //    ),
-        //    &lite::SignedHeader::new(header2.clone(), header2.header.clone()),
-        //    &gen.validators,
-        //    &gen.validators,
-        //    lite::TrustThresholdFraction::new(1, 3).unwrap(),
-        //    Duration::from_secs(10000),
-        //    SystemTime::now(),
-        //)
-        //.expect("verify failed");
+        let state = lite::verifier::verify_single(
+            lite::TrustedState::new(
+                lite::SignedHeader::new(header1.clone(), header1.header.clone()),
+                gen.validators.clone(),
+            ),
+            &lite::SignedHeader::new(header2.clone(), header2.header.clone()),
+            &gen.validators,
+            &gen.validators,
+            lite::TrustThresholdFraction::new(1, 3).unwrap(),
+            Duration::from_secs(10000),
+            SystemTime::now(),
+        );
+        assert!(state.is_ok());
     }
 }
