@@ -1,14 +1,13 @@
 use client_common::tendermint::lite;
 use client_common::{ErrorKind, Result, ResultExt, Storage};
 use parity_scale_codec::{Decode, Encode};
-use serde::{Deserialize, Serialize};
 use tendermint::validator;
 
 /// key space of wallet sync state
 const KEYSPACE: &str = "core_wallet_sync";
 
 /// Sync state for wallet
-#[derive(Debug, Serialize, Deserialize, Encode, Decode)]
+#[derive(Debug, Encode, Decode)]
 pub struct SyncState {
     /// last block height
     pub last_block_height: u64,

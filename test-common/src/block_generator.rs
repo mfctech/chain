@@ -326,10 +326,7 @@ impl TestnetSpec {
                 },
             },
             validators,
-            app_hash: Hash::new(hash::Algorithm::Sha256, &app_hash)
-                .unwrap()
-                .as_bytes()
-                .to_vec(),
+            app_hash: app_hash.to_vec(),
             app_state: Some(config),
         };
 
@@ -464,10 +461,7 @@ impl BlockGenerator {
             validators_hash: self.validators.hash(),
             next_validators_hash: self.validators.hash(),
             consensus_hash,
-            app_hash: Hash::new(hash::Algorithm::Sha256, &last_state.last_apphash)
-                .unwrap()
-                .as_bytes()
-                .to_vec(),
+            app_hash: last_state.last_apphash.to_vec(),
             last_results_hash: None,
             evidence_hash: None,
             proposer_address: node.validator_address(),

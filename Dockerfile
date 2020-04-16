@@ -41,7 +41,7 @@ RUN set -e; \
       clang; \
     rm -rf /var/lib/apt/lists/*
 
-COPY --from=tendermint/tendermint:v0.32.9 /usr/bin/tendermint /usr/bin/tendermint
+COPY --from=tendermint/tendermint:v0.33.3 /usr/bin/tendermint /usr/bin/tendermint
 
 FROM BUILDER_BASE AS TEST
 LABEL maintainer="blockchain@crypto.com"
