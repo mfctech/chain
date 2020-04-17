@@ -176,42 +176,6 @@ impl Node {
         }
     }
 
-    pub fn sign_header2(&self, header: &block::Header, chain_id: &chain::Id) -> vote::Vote {
-        let block_id = block::Id {
-            hash: header.hash(),
-            parts: Some(block::parts::Header::new(
-                0,
-                Hash::new(hash::Algorithm::Sha256, &[0; 32]).unwrap(),
-            )),
-        };
-        let now = Time::now();
-        let canonical_vote = amino_types::vote::CanonicalVote {
-            vote_type: vote::Type::Precommit.to_u32(),
-            height: header.height.value() as i64,
-            round: 0,
-            block_id: Some(amino_types::block_id::CanonicalBlockId {
-                hash: block_id.hash.as_bytes().to_vec(),
-                parts_header: Some(amino_types::block_id::CanonicalPartSetHeader {
-                    total: 0,
-                    hash: vec![0; 32],
-                }),
-            }),
-            timestamp: Some(amino_types::time::TimeMsg::from(now)),
-            chain_id: chain_id.to_string(),
-        };
-        let signature = self.sign_msg(&canonical_vote.bytes_vec_length_delimited());
-        vote::Vote {
-            vote_type: vote::Type::Precommit,
-            height: header.height,
-            round: 0,
-            block_id: Some(block_id),
-            timestamp: now,
-            validator_address: self.validator_address(),
-            validator_index: self.index,
-            signature,
-        }
-    }
-
     pub fn node_info(&self, chain_id: chain::Id) -> node::Info {
         node::Info {
             protocol_version: node::info::ProtocolVersionInfo {
