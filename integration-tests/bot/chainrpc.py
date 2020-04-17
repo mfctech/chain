@@ -279,8 +279,8 @@ class Blockchain(BaseService):
     def latest_height(self):
         return self.status()['sync_info']['latest_block_height']
 
-    def validators(self, height=None):
-        return self.call_chain('validators', str(height) if height is not None else None)
+    def validators(self, height=None, page = 0, num_per_page = 100):
+        return self.call_chain('validators', str(height) if height is not None else None, str(page), str(num_per_page))
 
     def block(self, height='latest'):
         height = height if height != 'latest' else self.latest_height()
